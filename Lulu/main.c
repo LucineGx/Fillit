@@ -6,7 +6,7 @@
 /*   By: lgaveria <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/12 19:31:46 by lgaveria          #+#    #+#             */
-/*   Updated: 2016/12/13 19:55:06 by lgaveria         ###   ########.fr       */
+/*   Updated: 2016/12/14 19:29:34 by lgaveria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int		validtetri(char *buf)
 			connections += (buf[i - 5] == '#' && i - 5 >= 0) ? 1 : 0;
 			connections += (buf[i + 5] == '#' && i + 5 <= 18) ? 1 : 0;
 		}
+		i += 1;
 	}
 	if (blocs != 4 || connections < 6)
 		return (0);
@@ -76,4 +77,4 @@ int		test(char *buf)
 	while (read(fd, buf, 21))
 	{
 		if (!(add_to_list(&(*first), buf)))
-			//free
+			//free*/
