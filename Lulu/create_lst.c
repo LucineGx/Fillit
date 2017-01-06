@@ -1,28 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   create_tab.c                                       :+:      :+:    :+:   */
+/*   create_lst.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgaveria <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/12/13 15:47:24 by lgaveria          #+#    #+#             */
-/*   Updated: 2016/12/13 19:53:53 by lgaveria         ###   ########.fr       */
+/*   Created: 2017/01/04 15:13:54 by lgaveria          #+#    #+#             */
+/*   Updated: 2017/01/06 19:43:21 by lgaveria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Libft/libft.h"
 #include "fillit.h"
 
-char	*cut_whitelines(char *buf)
+char	*cut_white_lines(char *buf)
 {
 	int		i;
 	int		j;
 	int		empty;
-	char	*ret;
 
 	i = 0;
 	j = 0;
-	while ( i < 15)
+	empty = 0;
+	while (i < 15)
 	{
 		if (buf[i] == '.' && buf[i + 1] == '.'
 				&& buf[i + 2] == '.' && buf[i + 3] == '.')
@@ -33,34 +32,40 @@ char	*cut_whitelines(char *buf)
 		else
 			i = 15;
 	}
-	if (empty != 0)
-	{
-		i = 5 * empty;
-		ret = ft_strsub(buf, empty * 5, (4 - empty) * 5);
-	}
-	return (ret);
+	return (ft_strsub(buf, empty * 5, (4 - empty) * 5));
 }
 
-
-char	**buf_to_tab(char *buf)
+char	**buf_to_tab(char *buf, char letter)
 {
-	int		i;
-	char	**ret;
+	int i;
 
 	i = 0;
-	buf = cut_whitelines(buf);
-	return (ft_strsplit(buf, '\n'));
+	while (buf[i])
+	{
+		if (buf[i] == '#')
+			buf[i] = letter;
+		i += 1;
+	}
+	return(ft_strsplit(cut_white_lines(buf), '\n'));
 }
 
-void	display_tab(char **tab)
+t_trimino	*newtetri(char **piece, t_trimino **head, t_trimino *lst)
 {
 	int y;
+	int x;
 
+	if ((lst = malloc(sizeof(t_trimino))) == 0)
+		return (0);
+	lst->piece = piece;
 	y = 0;
-	while (tab[y])
-	{
-		ft_putstr(tab[y]);
-		ft_putchar('\n');
+	while (piece[y])
 		y += 1;
-	}
+	lst->y = (piece == NULL) ? 0 : y;
+	x = 0;
+	while (piece[0][x])
+		x += 1;
+	lst->x = (piece == NULL) ? 0 : x;
+	lst->next = *head;
+	*head = lst;
+	return (lst);
 }

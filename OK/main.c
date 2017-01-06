@@ -5,19 +5,20 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgaveria <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/12/12 19:31:46 by lgaveria          #+#    #+#             */
-/*   Updated: 2016/12/13 19:55:06 by lgaveria         ###   ########.fr       */
+/*   Created: 2017/01/04 14:51:37 by lgaveria          #+#    #+#             */
+/*   Updated: 2017/01/05 16:45:15 by lgaveria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Libft/libft.h"
 #include "fillit.h"
+
+void	displaytetri(t_trimino **first);
 
 int		validtetri(char *buf)
 {
-	int	i;
-	int	connections;
-	int	blocs;
+	int i;
+	int connections;
+	int blocs;
 
 	i = 0;
 	connections = 0;
@@ -32,6 +33,7 @@ int		validtetri(char *buf)
 			connections += (buf[i - 5] == '#' && i - 5 >= 0) ? 1 : 0;
 			connections += (buf[i + 5] == '#' && i + 5 <= 18) ? 1 : 0;
 		}
+		i += 1;
 	}
 	if (blocs != 4 || connections < 6)
 		return (0);
@@ -40,7 +42,7 @@ int		validtetri(char *buf)
 
 int		test(char *buf)
 {
-	int			i;
+	int i;
 
 	i = 0;
 	while (i < 20)
@@ -51,8 +53,10 @@ int		test(char *buf)
 				return (0);
 		}
 		else
+		{
 			if (!(buf[i] == '.' || buf[i] == '#'))
 				return (0);
+		}
 		i += 1;
 	}
 	if (!(i == 19 || (i == 20 && buf[i] == '\n')))
@@ -62,18 +66,31 @@ int		test(char *buf)
 	return (1);
 }
 
-/*int		main(int ac, char **av)
+int		main(int ac, char **av)
 {
 	int			fd;
 	char		*buf;
-	t_trimino	**first;
+	t_trimino	*lst;
+	t_trimino	*head;
 
 	if (ac != 2 || (fd = open(av[1], O_RDONLY)) == -1)
-		write(1, "error\n", 6);
-	if ((buf = (char *)malloc(sizeof(char) * 21)) == 0)
-		return (0);
-	*first = NULL;
-	while (read(fd, buf, 21))
 	{
-		if (!(add_to_list(&(*first), buf)))
-			//free
+		write(1, "error\n", 6);
+		return (0);
+	}
+	if ((buf = (char*)malloc(sizeof(char) * 22)) == 0)
+		return (0);
+	head = NULL;
+	while ((read(fd, buf, 21)))
+	{
+		if (!(test(buf)))
+		{
+			deltetri(&head);
+			free(buf);
+			write(1, "error\n", 6);
+			return (0);
+		}
+		lst = newtetri(buf_to_tab(buf), &head, lst);
+	}
+	return (0);
+}

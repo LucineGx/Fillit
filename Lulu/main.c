@@ -5,19 +5,18 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgaveria <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/12/12 19:31:46 by lgaveria          #+#    #+#             */
-/*   Updated: 2016/12/14 19:29:34 by lgaveria         ###   ########.fr       */
+/*   Created: 2017/01/04 14:51:37 by lgaveria          #+#    #+#             */
+/*   Updated: 2017/01/06 17:34:53 by lgaveria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Libft/libft.h"
 #include "fillit.h"
 
 int		validtetri(char *buf)
 {
-	int	i;
-	int	connections;
-	int	blocs;
+	int i;
+	int connections;
+	int blocs;
 
 	i = 0;
 	connections = 0;
@@ -39,42 +38,54 @@ int		validtetri(char *buf)
 	return (1);
 }
 
-int		test(char *buf)
+int		test(char *buf, t_trimino *head)
 {
-	int			i;
+	int i;
+	int err;
 
 	i = 0;
+	err = 1;
 	while (i < 20)
 	{
 		if (i % 5 == 4)
-		{
-			if (buf[i] != '\n')
-				return (0);
-		}
+			err = (buf[i] != '\n') ? 0 : err;
 		else
-			if (!(buf[i] == '.' || buf[i] == '#'))
-				return (0);
+			err = (buf[i] == '.' || buf[i] == '#') ? err : 0;
 		i += 1;
 	}
-	if (!(i == 19 || (i == 20 && buf[i] == '\n')))
-		return (0);
-	if (!(validtetri(buf)))
-		return (0);
-	return (1);
+	err = (i == 19 || (i == 20 && buf[i] == '\n')) ? err : 0;
+	err = (validtetri(buf)) ? err : 0;
+	if (err == 0)
+	{
+		deltetri(&head);
+		free(buf);
+		write(1, "error\n", 6);
+	}
+	return (err);
 }
 
-/*int		main(int ac, char **av)
+int		main(int ac, char **av)
 {
 	int			fd;
 	char		*buf;
-	t_trimino	**first;
+	t_trimino	*lst;
+	t_trimino	*head;
+	char		letter;
 
-	if (ac != 2 || (fd = open(av[1], O_RDONLY)) == -1)
-		write(1, "error\n", 6);
-	if ((buf = (char *)malloc(sizeof(char) * 21)) == 0)
-		return (0);
-	*first = NULL;
-	while (read(fd, buf, 21))
+	if (ac != 2 || (fd = open(av[1], O_RDONLY)) == -1 || (buf = (char*)malloc(sizeof(char) * 22)) == 0)
 	{
-		if (!(add_to_list(&(*first), buf)))
-			//free*/
+		write(1, "error\n", 6);
+		return (0);
+	}
+	head = NULL;
+	letter = 'A';
+	while ((read(fd, buf, 21)))
+	{
+		if (!(test(buf, head)))
+			return (0);
+		lst = newtetri(buf_to_tab(buf, letter), &head, lst);
+		letter++;
+	}
+	displaytetri(&head);
+	return (0);
+}

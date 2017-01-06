@@ -1,55 +1,62 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   t_trimino.c                                        :+:      :+:    :+:   */
+/*   create_lst.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgaveria <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/12/13 19:01:00 by lgaveria          #+#    #+#             */
-/*   Updated: 2016/12/14 19:23:59 by lgaveria         ###   ########.fr       */
+/*   Created: 2017/01/04 15:13:54 by lgaveria          #+#    #+#             */
+/*   Updated: 2017/01/04 19:23:54 by lgaveria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Libft/libft.h"
 #include "fillit.h"
+
+char		*cut_white_lines(char *buf)
+{
+	int		i;
+	int		j;
+	int		empty;
+
+	i = 0;
+	j = 0;
+	empty = 0;
+	while (i < 15)
+	{
+		if (buf[i] == '.' && buf[i + 1] == '.'
+				&& buf[i + 2] == '.' && buf[i + 3] == '.')
+		{
+			i += 5;
+			empty += 1;
+		}
+		else
+			i = 15;
+	}
+	return (ft_strsub(buf, empty * 5, (4 - empty) * 5));
+}
+
+char		**buf_to_tab(char *buf)
+{
+	return (ft_strsplit(cut_white_lines(buf), '\n'));
+}
 
 t_trimino	*newtetri(char **piece, t_trimino **head, t_trimino *lst)
 {
-	int			y;
-	int			x;
+	int y;
+	int x;
 
 	if ((lst = malloc(sizeof(t_trimino))) == 0)
 		return (0);
 	lst->piece = piece;
-	if (piece == NULL)
-	{
-		lst->x = 0;
-		lst->y = 0;
-	}
-	if (piece != NULL)
-	{
-		y = 0;
-		while (piece[y])
-			y += 1;
-		lst->y = y;
-		x = 0;
-		while (piece[0][x])
-			x += 1;
-		lst->x = x;
-	}
+	y = 0;
+	while (piece[y])
+		y += 1;
+	lst->y = (piece == NULL) ? 0 : y;
+	x = 0;
+	while (piece[0][x])
+		x += 1;
+	lst->x = (piece == NULL) ? 0 : x;
 	lst->next = *head;
 	*head = lst;
 	return (lst);
-}
-
-void		deltetri(t_trimino **first)
-{
-	t_trimino *tmp;
-
-	tmp = *first;
-	if (tmp ->next != NULL)
-		deltetri(&(*tmp).next);
-	free((*first)->piece);
-	free(*first);
-	*first = NULL;
 }
